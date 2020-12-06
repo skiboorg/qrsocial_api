@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from .serializers import *
 
-class GetGalleriesByUserNickmane(generics.ListAPIView):
+class GetGalleriesByUserNickname(generics.ListAPIView):
     serializer_class = GallerySerializer
 
     def get_queryset(self):
@@ -11,6 +11,5 @@ class GetGalleriesByUserNickmane(generics.ListAPIView):
         galleries = Gallery.objects.filter(owner__nickname=nickname)
         print(galleries)
         return galleries
-
 
 

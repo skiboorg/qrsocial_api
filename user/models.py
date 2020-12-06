@@ -30,6 +30,10 @@ class UserManager(BaseUserManager):
         return self._create_user(wechatid, password, **extra_fields)
 
 
+class UserTag(models.Model):
+    name = models.CharField(max_length=50, blank=True, null=True)
+
+
 class User(AbstractUser):
     username = None
     first_name = None
@@ -41,6 +45,7 @@ class User(AbstractUser):
     wechatid = models.CharField('wechatid', max_length=50, blank=True, null=True, unique=True)
     email = models.EmailField('Эл. почта', blank=True, null=True, unique=True)
     birthday = models.DateField('День рождения', blank=True, null=True)
+    tags = models.ManyToManyField(UserTag, blank=True)
 
     balance = models.IntegerField('Баланс', default=0)
     rating = models.IntegerField('Рейтинг чувака', default=1)
@@ -48,6 +53,13 @@ class User(AbstractUser):
     streams_rating = models.IntegerField('Рейтинг стримов', default=1)
     level = models.IntegerField('Уровень', default=1)
     years = models.IntegerField('Лет', default=0)
+
+    about = models.TextField('О себе', blank=True, null=True)
+    city = models.CharField('Город', max_length=50, blank=True, null=True)
+    education = models.CharField('Образование', max_length=50, blank=True, null=True)
+    work_place = models.CharField('Место работы', max_length=50, blank=True, null=True)
+    interests = models.TextField('Интересы', blank=True, null=True)
+    interests_additional = models.TextField('Интересы дополнительные', blank=True, null=True)
 
     vip_update = models.DateField('Дата начала аккаунта', blank=True, null=True)
     vip_expire = models.DateField('Дата завершения аккаунта', blank=True, null=True)

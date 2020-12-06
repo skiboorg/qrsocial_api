@@ -6,7 +6,7 @@ from user.models import User
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ['image']
+        fields = ['id','image']
 
 
 class GallerySerializer(serializers.ModelSerializer):

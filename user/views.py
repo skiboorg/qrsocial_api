@@ -65,11 +65,19 @@ class GetUserInfoByNickname(generics.RetrieveAPIView):
         return user
 
 
+class GetUserTags(generics.ListAPIView):
+    serializer_class = UserTagSerializar
+    queryset = UserTag.objects.all()
+
+
 class GetStreamers(generics.ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        return User.objects.filter(is_streamer=True, is_show_at_home=True)
+        if self.request.query_params.get('at_home') == 'true':
+            return User.objects.filter(is_streamer=True, is_show_at_home=True)
+        else:
+            return User.objects.filter(is_streamer=True)
 
 class AddToBalance(APIView):
     def post(self,request):

@@ -8,6 +8,7 @@ urlpatterns = [
     path('update/', views.UserUpdate.as_view()),
     path('get_user_info_by_nickname/', views.GetUserInfoByNickname.as_view()),
     path('get_streamers/', views.GetStreamers.as_view()),
+    path('get_user_tags', views.GetUserTags.as_view()),
     path('add_to_balance', views.AddToBalance.as_view()),
 
 ]

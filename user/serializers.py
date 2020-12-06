@@ -9,6 +9,13 @@ from friend.serializers import *
 from gift.models import Gift,UserGift
 
 # User = get_user_model()
+
+class UserTagSerializar(serializers.ModelSerializer):
+    class Meta:
+        model = UserTag
+        fields = '__all__'
+
+
 class UserSerializerForGift(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -33,12 +40,13 @@ class UserGiftSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField()
-    bg_image = serializers.SerializerMethodField()
-    own_friend_list = FriendListSerializer(many=True, required=False)
+    avatar = serializers.SerializerMethodField(read_only=True)
+    bg_image = serializers.SerializerMethodField(read_only=True)
+    own_friend_list = FriendListSerializer(many=True, required=False,read_only=True)
     # apply_list = FriendApplySerializer(many=True)
-    gifts = UserGiftSerializer(many=True, required=False)
-
+    gifts = UserGiftSerializer(many=True, required=False,read_only=True)
+    # tags = UserTagSerializar(many=True, required=False,read_only=True)
+    years = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
         fields=[
@@ -66,9 +74,24 @@ class UserSerializer(serializers.ModelSerializer):
             'gifts',
             'streamer_rating',
             'streams_rating',
-
-
+            'tags',
+            'about',
+            'city',
+            'education',
+            'work_place',
+            'interests',
+            'interests_additional',
+            'last_login',
+            'date_joined',
         ]
+
+    def get_years(self, obj):
+        from datetime import date, timedelta
+        if obj.birthday:
+
+            return (date.today() - obj.birthday) // timedelta(days=365.2425)
+        else:
+            return None
 
     def get_avatar(self, obj):
         if obj.avatar:
