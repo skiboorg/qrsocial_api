@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -16,6 +18,7 @@ class DeletePost(APIView):
     def post(self, request):
         data = request.data
         print(data)
+        Post.objects.get(id=data['id']).delete()
         return Response(status=200)
 
 
@@ -23,7 +26,12 @@ class AddPost(APIView):
     def post(self, request):
         data = request.data
         print(data)
-        Post.objects.create(owner=request.user)
+        new_post = Post.objects.create(owner=request.user, text=json.loads(request.data['text']))
+        for f in request.FILES.getlist('image'):
+            print(f)
+            new_post.image = f
+            new_post.save(update_fields=['image'])
+
         return Response(status=200)
 
 
