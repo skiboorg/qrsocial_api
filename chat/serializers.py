@@ -12,6 +12,7 @@ class UserSerializerForMessage(serializers.ModelSerializer):
             'fio',
             'nickname',
             'is_online'
+            'is_vip'
         ]
 class UserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
@@ -22,7 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
             'avatar',
             'fio',
             'nickname',
-            'is_online'
+            'is_online',
+            'is_vip'
         ]
     def get_avatar(self, obj):
         if obj.avatar:

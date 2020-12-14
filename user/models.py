@@ -73,7 +73,7 @@ class User(AbstractUser):
     is_show_at_home = models.BooleanField('Отображать стримера на главной?', default=False)
 
     verify_code = models.CharField('Код подтверждения', max_length=50, blank=True, null=True)
-    stream_key = models.UUIDField('Ключ стрима',blank=True,null=True, default=uuid.uuid4)
+    suid = models.UUIDField('Ключ стрима',blank=True,null=True, default=uuid.uuid4)
     channel = models.CharField(max_length=255,blank=True,null=True)
 
     USERNAME_FIELD = 'wechatid'

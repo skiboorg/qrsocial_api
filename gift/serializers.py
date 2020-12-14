@@ -15,7 +15,7 @@ class UserSerializerForGift(serializers.ModelSerializer):
         ]
 
 class GiftSerializer(serializers.ModelSerializer):
-
+    print('GiftSerializer')
     class Meta:
         model = Gift
         fields = '__all__'
@@ -27,4 +27,10 @@ class UserGiftSerializer(serializers.ModelSerializer):
     gift = GiftSerializer(many=False)
     class Meta:
         model = UserGift
+        fields = '__all__'
+
+class DonaterSerializer(serializers.ModelSerializer):
+    from_user = UserSerializerForGift(many=False)
+    class Meta:
+        model = Donater
         fields = '__all__'

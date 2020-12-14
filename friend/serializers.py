@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_verified',
             'is_email_verified',
             'verify_code',
-            'stream_key',
+            'suid',
             'channel',
             'groups',
             'user_permissions',

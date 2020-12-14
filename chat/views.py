@@ -1,3 +1,4 @@
+import json
 from functools import reduce
 
 
@@ -60,18 +61,24 @@ class SetChatRead(APIView):
 class ChatAdd(APIView):
     """Добавить сообщение в чат"""
     def post(self,request, chat_id):
-        print('chat_id',chat_id)
+        print(request.data)
+        message_text = json.loads(request.data['message'])
+        print(message_text)
+
         chat = Chat.objects.get(id=chat_id)
         new_message = Message.objects.create(chat=chat,
                                user=request.user,
-                               message=request.data['message'])
+                               message=message_text)
+
+        for f in request.FILES.getlist('image'):
+            new_message.image = f
+            new_message.save(update_fields=['image'])
+
         message = MessageSerializer(new_message,many=False)
         async_to_sync(channel_layer.group_send)('chat_%s' % chat.id,
                                                  {"type": "chat.message", 'message': message.data})
         for user in chat.users.all():
-            print(user)
-            if user!= request.user:
-                print('send to user',user.nickname)
+            if user != request.user:
                 if user.channel:
                     async_to_sync(channel_layer.send)(user.channel,
                                                       {
@@ -79,12 +86,7 @@ class ChatAdd(APIView):
                                                           'message': 'Новое сообщенеи в чатеr',
                                                           'event' : 'new_chat_mgs'
                                                       })
-
-
-
         return Response(status=201)
-
-
 
 
 class ChatNewMessage(APIView):

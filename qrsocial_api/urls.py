@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/v1/chat/', include('chat.urls')),
     path('api/v1/friend/', include('friend.urls')),
     path('api/v1/gift/', include('gift.urls')),
+    path('api/v1/stream/', include('stream.urls')),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
