@@ -19,7 +19,8 @@ class Stream(models.Model):
 
 
     def save(self, *args, **kwargs):
-        self.uid = create_random_string(digits=False,num=8)
+        if not self.uid:
+            self.uid = create_random_string(digits=False,num=8)
         super(Stream, self).save(*args, **kwargs)
 
     def get_stream_url(self):

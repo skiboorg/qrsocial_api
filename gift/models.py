@@ -6,6 +6,7 @@ class Gift(models.Model):
     image = models.ImageField('Фото', upload_to='gifts/', blank=True, null=True)
     is_special_gift = models.BooleanField('Это подарок-запрос?',default=False)
     is_for_vip = models.BooleanField('Для VIP?',default=False)
+    description = models.TextField('Описание',blank=True,null=True)
 
 
 class UserGift(models.Model):

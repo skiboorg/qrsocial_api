@@ -17,7 +17,7 @@ channel_layer = get_channel_layer()
 class GetChat(generics.RetrieveAPIView):
     serializer_class = ChatSerializer
     def get_object(self):
-        chat_id=self.request.query_params.get('chat_id')
+        chat_id = self.request.query_params.get('chat_id')
         chat = Chat.objects.get(id=chat_id)
         return chat
 
@@ -45,7 +45,7 @@ class ChatsList(generics.ListAPIView):
     """Вывод чатов"""
     serializer_class = ChatsSerializer
     def get_queryset(self):
-        chats = Chat.objects.filter(users__in=[self.request.user.id]).order_by('-updatedAt')
+        chats = Chat.objects.filter(users__in=[self.request.user.id], is_stream_chat=False).order_by('-updatedAt')
         return chats
 
 class SetChatRead(APIView):

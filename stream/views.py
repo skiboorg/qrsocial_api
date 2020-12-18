@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
 from .serializers import *
+from chat.models import Chat
 
 class GetStreamsByUserNickmane(generics.ListAPIView):
     serializer_class = StreamSerializer
@@ -12,18 +13,17 @@ class GetStreamsByUserNickmane(generics.ListAPIView):
         streams = Stream.objects.filter(streamer__nickname=nickname, is_archived=False)
         return streams
 
+
 class GetStreamByUID(generics.RetrieveAPIView):
     serializer_class = StreamSerializer
 
     def get_object(self):
         uid = self.request.query_params.get('uid')
-        print(uid)
         try:
-            stream = Stream.objects.get(uid=uid)
+            stream = Stream.objects.get(uid=uid, is_active=True)
             return stream
         except Stream.DoesNotExist:
             return False
-
 
 
 class GetStreamsForHomePage(generics.ListAPIView):
@@ -32,6 +32,7 @@ class GetStreamsForHomePage(generics.ListAPIView):
     def get_queryset(self):
         streams = Stream.objects.filter(is_archived=False,is_private=False)
         return streams
+
 
 class AddStream(APIView):
     def post(self, request):
@@ -49,8 +50,23 @@ class AddStream(APIView):
             print(f)
             new_stream.image = f
             new_stream.save(update_fields=['image'])
+        new_chat = Chat.objects.create(is_stream_chat=True,stream=new_stream,starter=request.user)
+        new_chat.users.add(request.user)
         return Response(status=200)
 
-class DeleteStream(generics.DestroyAPIView):
-    serializer_class = StreamSerializer
-    queryset = Stream.objects.filter()
+
+class UpdateStream(APIView):
+    def post(self, request):
+        data = request.data
+        stream = Stream.objects.get(id=data['id'])
+        if data['action'] == 'delete':
+            stream.delete()
+        elif data['action'] == 'start':
+            stream.is_active = True
+            stream.save()
+        elif data['action'] == 'stop':
+            stream.is_active = False
+            stream.save()
+        return Response(status=200)
+
+

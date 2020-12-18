@@ -76,6 +76,8 @@ class GetStreamers(generics.ListAPIView):
     def get_queryset(self):
         if self.request.query_params.get('at_home') == 'true':
             return User.objects.filter(is_streamer=True, is_show_at_home=True)
+        if self.request.query_params.get('top5') == 'true':
+            return User.objects.filter(is_streamer=True).order_by('-streamer_rating')[:5]
         else:
             return User.objects.filter(is_streamer=True)
 

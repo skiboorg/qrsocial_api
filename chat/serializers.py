@@ -11,7 +11,7 @@ class UserSerializerForMessage(serializers.ModelSerializer):
             'avatar',
             'fio',
             'nickname',
-            'is_online'
+            'is_online',
             'is_vip'
         ]
 class UserSerializer(serializers.ModelSerializer):
@@ -44,6 +44,7 @@ class ChatSerializer(serializers.ModelSerializer):
             'updatedAt',
             'starter',
             'opponent',
+            'is_stream_chat'
 
             ]
 
@@ -64,7 +65,8 @@ class ChatsSerializer(serializers.ModelSerializer):
             # 'updatedAt',
             'starter',
             'opponent',
-            'chat_opened'
+            'chat_opened',
+            'is_stream_chat'
             # 'last_message',
             # 'last_message_user_id',
             # 'last_message_user_avatar',

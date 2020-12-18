@@ -8,8 +8,10 @@ class Chat(models.Model):
                                     related_name='chatusers',db_index=True)
     starter = models.ForeignKey('user.User',blank=True,null=True,on_delete=models.CASCADE,related_name='starter')
     opponent = models.ForeignKey('user.User',blank=True,null=True,on_delete=models.CASCADE,related_name='opponent')
+    stream = models.ForeignKey('stream.Stream',blank=True,null=True,on_delete=models.CASCADE,related_name='stream')
     isNewMessages = models.BooleanField('Есть новые сообщения', default=False)
     lastMessageOwn = models.BooleanField( default=False)
+    is_stream_chat = models.BooleanField(default=False)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
 
