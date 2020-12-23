@@ -41,5 +41,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
+            'type': 'message',
             'message': message
+        }))
+
+    # Receive message from room group
+    async def chat_gift(self, event):
+        gift_img = event['gift_img']
+        gift_price = event['gift_price']
+        gift_message = event['gift_message']
+        gift_from = event['gift_from']
+        gift_to = event['gift_to']
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({
+            'type':'gift',
+            'gift_img': gift_img,
+            'gift_price': gift_price,
+            'gift_message': gift_message,
+            'gift_from': gift_from,
+            'gift_to': gift_to
         }))

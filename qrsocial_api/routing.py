@@ -12,8 +12,8 @@ application = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(
         URLRouter([
             # user.routing.websocket_urlpatterns
-            path('ws/user/online/', UserOnline.as_asgi()),
-            path('ws/chat/<chat_id>', ChatConsumer.as_asgi()),
+            path('ws/user/online/', UserOnline),    #.as_asgi()
+            path('ws/chat/<chat_id>', ChatConsumer),    #.as_asgi()
             # path('ws/video_call/signal/<test>', VideoCallSignalConsumer.as_asgi()),
 
         ])

@@ -3,6 +3,18 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from .serializers import *
 
+
+class AddGallery(APIView):
+    def post(self,request):
+        print(request.data)
+        return Response(status=200)
+
+
+class DeleteGallery(APIView):
+    def post(self, request):
+        return Response(status=200)
+
+
 class GetGalleriesByUserNickname(generics.ListAPIView):
     serializer_class = GallerySerializer
 

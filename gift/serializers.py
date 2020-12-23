@@ -1,7 +1,7 @@
 
 from rest_framework import serializers
 from .models import *
-from user.models import  User
+from user.models import User
 
 class UserSerializerForGift(serializers.ModelSerializer):
     class Meta:
@@ -34,3 +34,15 @@ class DonaterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donater
         fields = '__all__'
+
+class StreamDonaterSerializer(serializers.ModelSerializer):
+    from_user = UserSerializerForGift(many=False)
+    class Meta:
+        model = StreamDonater
+        fields = [
+            'stream',
+            'to_user',
+            'from_user',
+            'summ',
+
+        ]

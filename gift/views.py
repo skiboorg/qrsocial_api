@@ -4,7 +4,12 @@ from rest_framework.views import APIView
 from .serializers import *
 from user.models import User
 from history.services import create_user_history
+from stream.models import Stream
+from chat.models import Chat
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
+channel_layer = get_channel_layer()
 
 class GetUserSendedGifts(generics.ListAPIView):
     serializer_class = UserGiftSerializer
@@ -12,12 +17,23 @@ class GetUserSendedGifts(generics.ListAPIView):
     def get_queryset(self):
         return UserGift.objects.filter(from_user__nickname=self.request.query_params['nickname'])
 
-
 class GetUserTop3Donaters(generics.ListAPIView):
     serializer_class = DonaterSerializer
 
     def get_queryset(self):
         return Donater.objects.filter(to_user__nickname=self.request.query_params['nickname']).order_by('-summ')[:3]
+
+
+
+class GetUserTop3StreamDonaters(generics.ListAPIView):
+    serializer_class = StreamDonaterSerializer
+
+    def get_queryset(self):
+        try:
+            donaters = StreamDonater.objects.filter(stream_id=self.request.query_params.get('stream_id')).order_by('-summ')[:3]
+            return donaters
+        except:
+            return None
 
 
 class GetUserGifts(generics.ListAPIView):
@@ -40,6 +56,7 @@ class GetAllGifts(generics.ListAPIView):
 
 class SendGiftToUser(APIView):
     def post(self, request):
+        print(request.data)
         gift = Gift.objects.get(id=request.data['gift_id'])
         gift_from_user = request.user
         gift_to_user = User.objects.get(nickname=request.data['nickname'])
@@ -51,6 +68,33 @@ class SendGiftToUser(APIView):
                                 message=request.data['message'])
         gift_to_user.save()
         gift_from_user.save()
+        if request.data['stream']:
+            print('This is stream gift')
+            stream = Stream.objects.get(id=request.data['stream'])
+            stream_chat = Chat.objects.get(stream=stream)
+            try:
+                donater = StreamDonater.objects.get(to_user=gift_to_user,
+                                                    from_user=gift_from_user,
+                                                    stream=stream)
+                donater.summ += gift.price
+                donater.save()
+            except StreamDonater.DoesNotExist:
+                StreamDonater.objects.create(summ=gift.price,
+                                       stream=stream,
+                                       to_user=gift_to_user,
+                                       from_user=gift_from_user)
+            print('sending WS gift message')
+            async_to_sync(channel_layer.group_send)('chat_%s' % stream_chat.id,
+                                                    {"type": "chat.gift",
+                                                     'gift_img': gift.image.url,
+                                                     'gift_price': gift.price,
+                                                     'gift_message': request.data['message'],
+                                                     'gift_from': gift_from_user.nickname,
+                                                     'gift_to': gift_to_user.id,
+
+                                                     }
+                                                    )
+
         try:
             donater = Donater.objects.get(to_user=gift_to_user,
                                           from_user=gift_from_user)

@@ -22,7 +22,7 @@ class GetStreamByUID(generics.RetrieveAPIView):
         try:
             stream = Stream.objects.get(uid=uid, is_active=True)
             return stream
-        except Stream.DoesNotExist:
+        except:
             return False
 
 

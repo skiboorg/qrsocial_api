@@ -1,6 +1,6 @@
 from django.db import models
 from user.services import create_random_string
-
+from chat.models import Chat
 
 class Stream(models.Model):
     streamer = models.ForeignKey('user.User',on_delete=models.CASCADE,blank=True,null=True,related_name='streams')
@@ -25,3 +25,9 @@ class Stream(models.Model):
 
     def get_stream_url(self):
         return f'{self.streamer.nickname}--{self.uid}'
+    def get_stream_chat_id(self):
+        try:
+            stream_chat = Chat.objects.get(stream_id=self.id)
+            return stream_chat.id
+        except:
+            return 0

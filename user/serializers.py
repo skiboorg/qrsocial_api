@@ -83,6 +83,7 @@ class UserSerializer(serializers.ModelSerializer):
             'interests_additional',
             'last_login',
             'date_joined',
+            'suid'
         ]
 
     def get_years(self, obj):

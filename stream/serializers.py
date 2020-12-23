@@ -24,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 class StreamSerializer(serializers.ModelSerializer):
     streamer = UserSerializer(many=False,required=False,read_only=True)
     url = serializers.CharField(source='get_stream_url',required=False,read_only=True)
+    chat_id = serializers.CharField(source='get_stream_chat_id',required=False,read_only=True)
     class Meta:
         model = Stream
         fields = '__all__'
