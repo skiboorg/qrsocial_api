@@ -62,7 +62,7 @@ class SendGiftToUser(APIView):
         gift_to_user = User.objects.get(nickname=request.data['nickname'])
         gift_from_user.balance -= gift.price
         gift_to_user.balance += gift.price
-        UserGift.objects.create(from_user=gift_from_user,
+        new_gift = UserGift.objects.create(from_user=gift_from_user,
                                 user=gift_to_user,
                                 gift=gift,
                                 message=request.data['message'])
@@ -72,6 +72,8 @@ class SendGiftToUser(APIView):
             print('This is stream gift')
             stream = Stream.objects.get(id=request.data['stream'])
             stream_chat = Chat.objects.get(stream=stream)
+            new_gift.is_stream_gift = True
+            new_gift.save()
             try:
                 donater = StreamDonater.objects.get(to_user=gift_to_user,
                                                     from_user=gift_from_user,
@@ -91,7 +93,9 @@ class SendGiftToUser(APIView):
                                                      'gift_message': request.data['message'],
                                                      'gift_from': gift_from_user.nickname,
                                                      'gift_to': gift_to_user.id,
-
+                                                     'gift_from_avatar': gift_from_user.get_avatar(),
+                                                     'gift_from_fio': gift_from_user.fio,
+                                                     'gift_time': new_gift.created_at.strftime("%H:%M:%S")
                                                      }
                                                     )
 

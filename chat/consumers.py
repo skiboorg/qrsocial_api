@@ -52,6 +52,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         gift_message = event['gift_message']
         gift_from = event['gift_from']
         gift_to = event['gift_to']
+        gift_from_avatar = event['gift_from_avatar']
+        gift_from_fio = event['gift_from_fio']
+        gift_time = event['gift_time']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
@@ -60,5 +63,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'gift_price': gift_price,
             'gift_message': gift_message,
             'gift_from': gift_from,
-            'gift_to': gift_to
+            'gift_to': gift_to,
+            'gift_from_avatar': gift_from_avatar,
+            'gift_from_fio': gift_from_fio,
+            'gift_time': gift_time,
         }))

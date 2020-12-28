@@ -95,7 +95,7 @@ class ChatNewMessage(APIView):
         data = request.data
         chat_opponent = User.objects.get(nickname=data['nickname'])
         c = [request.user.id, chat_opponent.id]
-        chats = Chat.objects.annotate(cnt=models.Count('users')).filter(cnt=len(c))
+        chats = Chat.objects.annotate(cnt=models.Count('users')).filter(cnt=len(c),is_stream_chat=False) #ADDED  ,is_stream_chat=False
         chat_qs = reduce(lambda qs, pk: qs.filter(users=pk), c, chats)
 
         if len(chat_qs) == 0:

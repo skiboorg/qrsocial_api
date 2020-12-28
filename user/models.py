@@ -114,11 +114,11 @@ class User(AbstractUser):
             return f'{self.organization_name}'
 
 
-    # def get_avatar(self):
-    #     if self.avatar:
-    #         return self.avatar.url
-    #     else:
-    #         return '/static/img/no_ava.jpg'
+    def get_avatar(self):
+        if self.avatar:
+            return self.avatar.url
+        else:
+            return '/no-avatar.svg'
 
 
 
