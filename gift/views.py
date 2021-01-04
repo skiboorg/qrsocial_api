@@ -27,7 +27,6 @@ class GetUserTop3Donaters(generics.ListAPIView):
 
 class GetUserTop3StreamDonaters(generics.ListAPIView):
     serializer_class = StreamDonaterSerializer
-
     def get_queryset(self):
         try:
             donaters = StreamDonater.objects.filter(stream_id=self.request.query_params.get('stream_id')).order_by('-summ')[:3]

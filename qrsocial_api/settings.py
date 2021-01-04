@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'stream',
     'gift',
     'history',
+    'feedback',
 
 ]
 ASGI_APPLICATION = "qrsocial_api.routing.application"

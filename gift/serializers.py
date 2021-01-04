@@ -4,6 +4,7 @@ from .models import *
 from user.models import User
 
 class UserSerializerForGift(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = [
@@ -13,6 +14,12 @@ class UserSerializerForGift(serializers.ModelSerializer):
             'nickname',
             'is_online'
         ]
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            return self.context['request'].build_absolute_uri(obj.avatar.url)
+        else:
+            return '/no-avatar.svg'
 
 class GiftSerializer(serializers.ModelSerializer):
     print('GiftSerializer')
@@ -37,6 +44,7 @@ class DonaterSerializer(serializers.ModelSerializer):
 
 class StreamDonaterSerializer(serializers.ModelSerializer):
     from_user = UserSerializerForGift(many=False)
+
     class Meta:
         model = StreamDonater
         fields = [
@@ -46,3 +54,5 @@ class StreamDonaterSerializer(serializers.ModelSerializer):
             'summ',
 
         ]
+
+

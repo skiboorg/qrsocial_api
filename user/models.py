@@ -118,7 +118,7 @@ class User(AbstractUser):
         if self.avatar:
             return self.avatar.url
         else:
-            return '/no-avatar.svg'
+            return '/media/no-avatar.svg'
 
 
 
