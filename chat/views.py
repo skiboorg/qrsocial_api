@@ -63,11 +63,13 @@ class ChatAdd(APIView):
     def post(self,request, chat_id):
         print(request.data)
         message_text = json.loads(request.data['message'])
+        stiker= json.loads(request.data['stiker'])
         print(message_text)
 
         chat = Chat.objects.get(id=chat_id)
         new_message = Message.objects.create(chat=chat,
                                user=request.user,
+                                stiker_id = stiker,
                                message=message_text)
 
         for f in request.FILES.getlist('image'):
@@ -117,3 +119,6 @@ class ChatNewMessage(APIView):
 
         return Response(status=200)
 
+class GetStikers(generics.ListAPIView):
+    serializer_class = StikerGroupSerializer
+    queryset = StikerGroup.objects.all()

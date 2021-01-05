@@ -3,6 +3,28 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
 
+class StikerGroup(models.Model):
+    name = models.CharField('Название группы', max_length=255, blank=False, null=True)
+    is_for_vip = models.BooleanField('Для VIP?', default=False)
+
+    def __str__(self):
+        return f'Группа стикеров {self.name} | Для ВИП :{self.is_for_vip}'
+
+    class Meta:
+        verbose_name = "Группа стикеров"
+        verbose_name_plural = "Группы стикеров"
+
+class Stiker(models.Model):
+    group = models.ForeignKey(StikerGroup, on_delete=models.CASCADE, null=True, blank=False, related_name='stikers')
+    image = models.ImageField('Изображение', upload_to='chat/', blank=True, null=True)
+
+    def __str__(self):
+        return f'Cтикер в группе :{self.group.name}'
+
+    class Meta:
+        verbose_name = "Стикер"
+        verbose_name_plural = "Стикеры"
+
 class Chat(models.Model):
     users = models.ManyToManyField('user.User', blank=True,  verbose_name='Пользователи',
                                     related_name='chatusers',db_index=True)
@@ -50,6 +72,7 @@ class Message(models.Model):
     chat = models.ForeignKey(Chat, blank=False, null=True, on_delete=models.CASCADE, verbose_name='В чате',
                              related_name='messages',db_index=True)
     user = models.ForeignKey('user.User', blank=False, null=True, on_delete=models.CASCADE, verbose_name='Сообщение от')
+    stiker = models.ForeignKey(Stiker, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Стикер')
     message = models.TextField('Сообщение', blank=True,null=True)
     image = models.ImageField('Изображение к сообщению', upload_to='chat/', blank=True, null=True)
     isUnread = models.BooleanField('Не прочитанное сообщение', default=True)
@@ -61,4 +84,5 @@ class Message(models.Model):
             self.chat.save()
 
         super(Message, self).save(*args, **kwargs)
+
 

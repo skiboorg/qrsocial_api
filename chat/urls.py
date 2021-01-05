@@ -5,6 +5,7 @@ urlpatterns = [
 
 
     path('get_chat_messages', views.MessagesList.as_view()),
+    path('get_stikers', views.GetStikers.as_view()),
     path('get_chat', views.GetChat.as_view()),
     path('set_chat_read/<int:chat_id>', views.SetChatRead.as_view()),
     path('all', views.ChatsList.as_view()),

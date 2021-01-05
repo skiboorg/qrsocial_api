@@ -74,9 +74,26 @@ class ChatsSerializer(serializers.ModelSerializer):
             # 'last_message_user_status'
 
                   ]
+class StikerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Stiker
+        fields = '__all__'
+
+
+
+class StikerGroupSerializer(serializers.ModelSerializer):
+    stikers = StikerSerializer(many=True)
+    class Meta:
+        model = StikerGroup
+        fields = '__all__'
+
+
+
 
 class MessageSerializer(serializers.ModelSerializer):
     user = UserSerializerForMessage(many=False)
+    stiker = StikerSerializer(many=False)
     class Meta:
         model = Message
         fields = [
@@ -85,11 +102,13 @@ class MessageSerializer(serializers.ModelSerializer):
             'user',
             'message',
             'image',
+            'stiker',
             'createdAt',
                   ]
 
 class MessagesSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    stiker = StikerSerializer(many=False)
     class Meta:
         model = Message
         fields = [
@@ -98,6 +117,9 @@ class MessagesSerializer(serializers.ModelSerializer):
             'message',
             'isUnread',
             'image',
+            'stiker',
             'createdAt',
             'chat'
                   ]
+
+
