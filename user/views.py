@@ -51,6 +51,13 @@ class UserUpdate(APIView):
             print(serializer.errors)
             return Response(status=400)
 
+class UserUpdateBg(APIView):
+    def post(self, request):
+        user = request.user
+        print(request.data['image_id'])
+        user.bg_image = UserBg.objects.get(id=request.data['image_id'])
+        user.save()
+        return Response(status=200)
 
 class GetUserInfoByNickname(generics.RetrieveAPIView):
     serializer_class = UserSerializer
@@ -64,6 +71,10 @@ class GetUserInfoByNickname(generics.RetrieveAPIView):
 
         return user
 
+
+class GetUserBg(generics.ListAPIView):
+    serializer_class = UserBgSerializer
+    queryset = UserBg.objects.all()
 
 class GetUserTags(generics.ListAPIView):
     serializer_class = UserTagSerializar

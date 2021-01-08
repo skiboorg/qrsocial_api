@@ -33,13 +33,18 @@ class UserManager(BaseUserManager):
 class UserTag(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
 
+class UserBg(models.Model):
+    image = models.ImageField('Задний фон', upload_to='user/bg', blank=True, null=True)
+    is_for_vip = models.BooleanField('Для ВИП?', default=False)
 
 class User(AbstractUser):
     username = None
     first_name = None
     last_name = None
     avatar = models.ImageField('Фото', upload_to='user/avatars',blank=True,null=True)
-    bg_image = models.ImageField('Задний фон', upload_to='user/bg',blank=True,null=True)
+    # bg_image = models.ImageField('Задний фон', upload_to='user/bg',blank=True,null=True)
+    bg_image = models.ForeignKey(UserBg, on_delete=models.SET_NULL, blank=True, null=True)
+
     fio = models.CharField('ФИО', max_length=50, blank=True, null=True, default='John Doe')
     nickname = models.CharField('@ник', max_length=50, blank=True, null=True, unique=True)
     wechatid = models.CharField('wechatid', max_length=50, blank=True, null=True, unique=True)

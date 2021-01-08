@@ -102,7 +102,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_bg_image(self, obj):
         if obj.bg_image:
-            return self.context['request'].build_absolute_uri(obj.bg_image.url)
+            return self.context['request'].build_absolute_uri(obj.bg_image.image.url)
         else:
             return '/test-user-profile-bg.png'
 
@@ -162,5 +162,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return user
 
 
-
-
+class UserBgSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserBg
+        fields = '__all__'
