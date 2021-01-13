@@ -10,7 +10,6 @@ class AddGallery(APIView):
     def post(self, request):
         request_data = request.data
         data = json.loads(request_data['data'])
-        print(data)
         new_gallery = Gallery.objects.create(owner=request.user,
                                              title=data['title'],
                                              subtitle=data['subtitle'],
@@ -21,7 +20,6 @@ class AddGallery(APIView):
 
         for f in request.FILES.getlist('images'):
             Image.objects.create(gallery=new_gallery,image=f)
-
         return Response(status=200)
 
 
@@ -30,10 +28,8 @@ class UpdateGallery(APIView):
         request_data = request.data
         album = request_data['album']
         action = request_data['action']
-        print(album['id'])
         if action == 'delete':
             Gallery.objects.get(id=album['id']).delete()
-
         return Response(status=200)
 
 
@@ -43,7 +39,6 @@ class GetGalleriesByUserNickname(generics.ListAPIView):
     def get_queryset(self):
         nickname = self.request.query_params.get('nickname')
         galleries = Gallery.objects.filter(owner__nickname=nickname)
-        print(galleries)
         return galleries
 
 
@@ -53,7 +48,6 @@ class AddImageInGalleryById(APIView):
         for f in request.FILES.getlist('image'):
             new_image = Image.objects.create(gallery_id=gallery_id,image=f)
         return Response({'new_id':new_image.id},status=200)
-
 
 
 class DeleteImageById(generics.DestroyAPIView):

@@ -23,6 +23,11 @@ class GetUserTop3Donaters(generics.ListAPIView):
     def get_queryset(self):
         return Donater.objects.filter(to_user__nickname=self.request.query_params['nickname']).order_by('-summ')[:3]
 
+class GetUserTop10Donaters(generics.ListAPIView):
+    serializer_class = DonaterSerializer
+    def get_queryset(self):
+        return Donater.objects.all().order_by('-summ')[:10]
+
 
 
 class GetUserTop3StreamDonaters(generics.ListAPIView):

@@ -37,7 +37,6 @@ class GetStreamsForHomePage(generics.ListAPIView):
 class AddStream(APIView):
     def post(self, request):
         request_data = request.data
-        print(json.loads(request_data['data']))
         data = json.loads(request_data['data'])
 
         new_stream = Stream.objects.create(streamer=request.user,
@@ -47,7 +46,6 @@ class AddStream(APIView):
                                            is_private=data['is_private'],
                                            date=data['date'])
         for f in request.FILES.getlist('image'):
-            print(f)
             new_stream.image = f
             new_stream.save(update_fields=['image'])
         new_chat = Chat.objects.create(is_stream_chat=True,stream=new_stream,starter=request.user)
