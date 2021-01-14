@@ -28,47 +28,44 @@ class UserUpdate(APIView):
 
     def post(self, request):
         user = request.user
-        print(json.loads(request.data['userData']))
-        print(request.FILES)
+        # print(json.loads(request.data['userData']))
+        # print(request.FILES)
         data = json.loads(request.data['userData'])
         serializer = UserSerializer(user, data=data)
         if serializer.is_valid():
             serializer.save()
             for f in request.FILES.getlist('avatar'):
-                print(f'f=')
+                # print(f'f=')
                 user.avatar = f
                 user.save(update_fields=['avatar'])
             for f1 in request.FILES.getlist('bg_image'):
-                print(f1)
+                # print(f1)
                 user.bg_image = f1
                 user.save()
             if data['password1'] and data['password1'] == data['password2']:
                 user.set_password(data['password1'])
                 user.save()
             return Response(status=200)
-
         else:
-            print(serializer.errors)
+            # print(serializer.errors)
             return Response(status=400)
 
 class UserUpdateBg(APIView):
     def post(self, request):
         user = request.user
-        print(request.data['image_id'])
+        # print(request.data['image_id'])
         user.bg_image = UserBg.objects.get(id=request.data['image_id'])
         user.save()
         return Response(status=200)
 
 class GetUserInfoByNickname(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-
     def get_object(self):
         nickname = self.request.query_params.get('nickname')
         try:
             user = User.objects.get(nickname=nickname)
         except:
             raise Http404
-
         return user
 
 
@@ -94,7 +91,7 @@ class GetStreamers(generics.ListAPIView):
 
 class AddToBalance(APIView):
     def post(self,request):
-        print(request.data)
+        # print(request.data)
         user = request.user
         user.balance += request.data['amount']
         user.save()

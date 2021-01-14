@@ -7,7 +7,7 @@ from user.models import User
 class AddOrDeleteFriendByNickname(APIView):
     def post(self,request):
         data = request.data
-        print(data)
+        # print(data)
         friend = User.objects.get(nickname=data['nickname'])
         all_friends = FriendList.objects.get(user=request.user)
         friend_all_friends = FriendList.objects.get(user=friend)

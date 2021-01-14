@@ -16,7 +16,7 @@ class UserOnline(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
-        print(self.user)
+        # print(self.user)
         await self.channel_layer.group_discard(
             'users',
             self.channel_name
@@ -35,9 +35,9 @@ class UserOnline(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         if text_data_json.get('user_id'):
             self.user = await self.get_user(text_data_json['user_id'])
-            print(self.user)
+            # print(self.user)
             await self.channel_layer.group_add("users", self.channel_name)
-            print(f"Added {self.channel_name} channel to users")
+            # print(f"Added {self.channel_name} channel to users")
             await self.save_user_channel()
             # channel_layer = get_channel_layer()
             # await channel_layer.send(self.channel_name, {

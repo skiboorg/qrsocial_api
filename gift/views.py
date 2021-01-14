@@ -53,14 +53,14 @@ class GetUserGiftsSpecial(generics.ListAPIView):
         return UserGift.objects.filter(user__nickname=self.request.query_params['nickname'], gift__is_special_gift=True)
 
 class GetAllGifts(generics.ListAPIView):
-    print('GetAllGifts')
+    # print('GetAllGifts')
     serializer_class = GiftSerializer
     queryset = Gift.objects.all()
 
 
 class SendGiftToUser(APIView):
     def post(self, request):
-        print(request.data)
+        # print(request.data)
         gift = Gift.objects.get(id=request.data['gift_id'])
         gift_from_user = request.user
         gift_to_user = User.objects.get(nickname=request.data['nickname'])

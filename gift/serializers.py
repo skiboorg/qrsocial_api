@@ -22,7 +22,7 @@ class UserSerializerForGift(serializers.ModelSerializer):
             return '/no-avatar.svg'
 
 class GiftSerializer(serializers.ModelSerializer):
-    print('GiftSerializer')
+    # print('GiftSerializer')
     class Meta:
         model = Gift
         fields = '__all__'

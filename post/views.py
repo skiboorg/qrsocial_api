@@ -17,7 +17,7 @@ class GetPostsByUserNickmane(generics.ListAPIView):
 class DeletePost(APIView):
     def post(self, request):
         data = request.data
-        print(data)
+        # print(data)
         Post.objects.get(id=data['id']).delete()
         return Response(status=200)
 
@@ -25,10 +25,10 @@ class DeletePost(APIView):
 class AddPost(APIView):
     def post(self, request):
         data = request.data
-        print(data)
+        # print(data)
         new_post = Post.objects.create(owner=request.user, text=json.loads(request.data['text']))
         for f in request.FILES.getlist('image'):
-            print(f)
+            # print(f)
             new_post.image = f
             new_post.save(update_fields=['image'])
 

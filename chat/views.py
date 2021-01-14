@@ -61,10 +61,10 @@ class SetChatRead(APIView):
 class ChatAdd(APIView):
     """Добавить сообщение в чат"""
     def post(self,request, chat_id):
-        print(request.data)
+        # print(request.data)
         message_text = json.loads(request.data['message'])
         stiker= json.loads(request.data['stiker'])
-        print(message_text)
+        # print(message_text)
 
         chat = Chat.objects.get(id=chat_id)
         new_message = Message.objects.create(chat=chat,

@@ -144,7 +144,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        print(validated_data)
+        # print(validated_data)
         try:
             user = self.perform_create(validated_data)
         except IntegrityError:
@@ -153,7 +153,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return user
 
     def perform_create(self, validated_data):
-        print('validated_data',validated_data)
+        # print('validated_data',validated_data)
         with transaction.atomic():
             user = User.objects.create_user(**validated_data)
             if settings.SEND_ACTIVATION_EMAIL:
