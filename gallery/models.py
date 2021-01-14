@@ -14,5 +14,7 @@ class Image(models.Model):
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, blank=False, null=True,related_name='images')
     image = models.ImageField('Фото', upload_to='gallery/', blank=True, null=True)
 
+class Banner(models.Model):
+    image = models.ImageField('Баннер', upload_to='banner/', blank=True, null=True)
 
 

@@ -33,6 +33,11 @@ class UpdateGallery(APIView):
         return Response(status=200)
 
 
+class GetBanners(generics.ListAPIView):
+    serializer_class = BannerSerializer
+    queryset = Banner.objects.all()
+
+
 class GetGalleriesByUserNickname(generics.ListAPIView):
     serializer_class = GallerySerializer
 
