@@ -10,7 +10,7 @@ class GetPostsByUserNickmane(generics.ListAPIView):
 
     def get_queryset(self):
         nickname = self.request.query_params.get('nickname')
-        posts = Post.objects.filter(owner__nickname=nickname)
+        posts = Post.objects.filter(owner__nickname=nickname).order_by('-created_at')
         return posts
 
 
