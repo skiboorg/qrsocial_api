@@ -8,6 +8,8 @@ from .models import *
 from rest_framework import generics
 from django.http import Http404
 from history.services import create_user_history
+from django.core.mail import send_mail,EmailMessage
+
 
 class GetUserByID(generics.RetrieveAPIView):
     serializer_class = UserSerializer
@@ -97,3 +99,19 @@ class AddToBalance(APIView):
         user.save()
         create_user_history(user, f'Пополнение счета {request.data["amount"]}. ')
         return Response(status=200)
+
+
+class LandingAstra(APIView):
+    def post(self,request):
+        msg = ''
+        title = ''
+        if request.data.get("type") == 'callBack':
+            msg = f'Телефон :{request.data.get("phone")} | Имя :{request.data.get("name")}'
+            title = 'Форма обратной связи (АСТРА)'
+        if request.data.get("type") == 'quiz':
+            msg = f'Телефон :{request.data.get("phone")} | Имя :{request.data.get("name")} | Ответы : {request.data.get("quiz")}'
+            title = 'Форма квиза (АСТРА)'
+        mail = EmailMessage(title, msg, 'dimon.skiborg@gmail.com', ('dimon.skiborg@gmail.com','igor@astrapromo.ru'))
+
+        mail.send()
+        return Response({'result':'ok'})

@@ -11,7 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
             'avatar',
             'fio',
             'nickname',
-            'suid'
+            'suid',
+            'streamer_rating'
         ]
     def get_avatar(self, obj):
         if obj.avatar:

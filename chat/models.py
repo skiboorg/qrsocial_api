@@ -3,6 +3,11 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
 
+class TraslateKey(models.Model):
+    key = models.CharField(max_length=255,blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 class StikerGroup(models.Model):
     name = models.CharField('Название группы', max_length=255, blank=False, null=True)
     is_for_vip = models.BooleanField('Для VIP?', default=False)
@@ -74,6 +79,7 @@ class Message(models.Model):
     user = models.ForeignKey('user.User', blank=False, null=True, on_delete=models.CASCADE, verbose_name='Сообщение от')
     stiker = models.ForeignKey(Stiker, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Стикер')
     message = models.TextField('Сообщение', blank=True,null=True)
+    message_translate = models.TextField('Перевод', blank=True,null=True)
     image = models.ImageField('Изображение к сообщению', upload_to='chat/', blank=True, null=True)
     isUnread = models.BooleanField('Не прочитанное сообщение', default=True)
     createdAt = models.DateTimeField(auto_now_add=True)

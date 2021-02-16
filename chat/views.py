@@ -1,6 +1,6 @@
 import json
 from functools import reduce
-
+import requests
 
 from rest_framework.response import Response
 from rest_framework import generics
@@ -57,20 +57,65 @@ class SetChatRead(APIView):
         messages.update(isUnread=False)
         return Response(status=200)
 
+def check_translate_key():
+    import datetime as dt
+    from datetime import datetime
+    from django.utils import timezone
+
+    key = None
+    try:
+        key = TraslateKey.objects.get(id=1)
+    except:
+        data = '{"yandexPassportOauthToken":"AgAAAABQDeFrAATuwSGnF2oKw0vmjJeaO4iggoE"}'
+        response = requests.post('https://iam.api.cloud.yandex.net/iam/v1/tokens', data=data)
+        key = response.json().get('iamToken')
+        TraslateKey.objects.create(key=key)
+        return (key)
+    if timezone.now() - key.updated_at > dt.timedelta(hours=6):
+        data = '{"yandexPassportOauthToken":"AgAAAABQDeFrAATuwSGnF2oKw0vmjJeaO4iggoE"}'
+        response = requests.post('https://iam.api.cloud.yandex.net/iam/v1/tokens', data=data)
+        key.key = response.json().get('iamToken')
+        key.save()
+        return response.json().get('iamToken')
+    else:
+        return key.key
+
+
+
 
 class ChatAdd(APIView):
+
     """Добавить сообщение в чат"""
     def post(self,request, chat_id):
         # print(request.data)
+        im_token = check_translate_key()
+        message_lang = request.data['message_lang']
         message_text = json.loads(request.data['message'])
         stiker= json.loads(request.data['stiker'])
-        # print(message_text)
+        print(message_lang)
+
+
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f"Bearer {im_token}",
+        }
+
+        data = {
+            "folder_id": "b1grf2b1imq40far6803",
+            "texts": [f"{message_text}",],
+            "targetLanguageCode": f"{'ru' if message_lang == 'zh' else 'zh'}"
+        }
+        response = requests.post('https://translate.api.cloud.yandex.net/translate/v2/translate', headers=headers,
+                                 data=json.dumps(data))
+        message_translate = response.json().get('translations')[0]['text']
 
         chat = Chat.objects.get(id=chat_id)
         new_message = Message.objects.create(chat=chat,
-                               user=request.user,
-                                stiker_id = stiker,
-                               message=message_text)
+                                             user=request.user,
+                                             stiker_id = stiker,
+                                             message=message_text,
+                                             message_translate=message_translate)
 
         for f in request.FILES.getlist('image'):
             new_message.image = f
@@ -78,7 +123,7 @@ class ChatAdd(APIView):
 
         message = MessageSerializer(new_message,many=False)
         async_to_sync(channel_layer.group_send)('chat_%s' % chat.id,
-                                                 {"type": "chat.message", 'message': message.data})
+                                                {"type": "chat.message", 'message': message.data})
         for user in chat.users.all():
             if user != request.user:
                 if user.channel:
