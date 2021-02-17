@@ -83,6 +83,7 @@ class GetUserTags(generics.ListAPIView):
 class GetStreamers(generics.ListAPIView):
     serializer_class = UserSerializer
 
+
     def get_queryset(self):
         if self.request.query_params.get('at_home') == 'true':
             return User.objects.filter(is_streamer=True, is_show_at_home=True)
@@ -90,6 +91,7 @@ class GetStreamers(generics.ListAPIView):
             return User.objects.filter(is_streamer=True).order_by('-streamer_rating')[:5]
         else:
             return User.objects.filter(is_streamer=True)
+
 
 class AddToBalance(APIView):
     def post(self,request):
@@ -100,18 +102,3 @@ class AddToBalance(APIView):
         create_user_history(user, f'Пополнение счета {request.data["amount"]}. ')
         return Response(status=200)
 
-
-class LandingAstra(APIView):
-    def post(self,request):
-        msg = ''
-        title = ''
-        if request.data.get("type") == 'callBack':
-            msg = f'Телефон :{request.data.get("phone")} | Имя :{request.data.get("name")}'
-            title = 'Форма обратной связи (АСТРА)'
-        if request.data.get("type") == 'quiz':
-            msg = f'Телефон :{request.data.get("phone")} | Имя :{request.data.get("name")} | Ответы : {request.data.get("quiz")}'
-            title = 'Форма квиза (АСТРА)'
-        mail = EmailMessage(title, msg, 'dimon.skiborg@gmail.com', ('dimon.skiborg@gmail.com','igor@astrapromo.ru'))
-
-        mail.send()
-        return Response({'result':'ok'})

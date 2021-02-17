@@ -12,5 +12,5 @@ urlpatterns = [
     path('get_user_tags', views.GetUserTags.as_view()),
     path('get_user_bg', views.GetUserBg.as_view()),
     path('add_to_balance', views.AddToBalance.as_view()),
-    path('mail/astra', views.LandingAstra.as_view()),
+
 ]
