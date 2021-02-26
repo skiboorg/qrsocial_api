@@ -15,8 +15,11 @@ urlpatterns = [
     path('api/v1/gift/', include('gift.urls')),
     path('api/v1/stream/', include('stream.urls')),
     path('api/v1/feedback/', include('feedback.urls')),
+    path('api/v1/blog/', include('blog.urls')),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

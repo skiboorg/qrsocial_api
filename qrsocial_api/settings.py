@@ -11,6 +11,8 @@ DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'user.User'
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 INSTALLED_APPS = [
@@ -27,6 +29,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 
+    'ckeditor',
+    'ckeditor_uploader',
+
     'user',
     'chat',
     'friend',
@@ -36,6 +41,7 @@ INSTALLED_APPS = [
     'gift',
     'history',
     'feedback',
+    'blog',
 
 ]
 ASGI_APPLICATION = "qrsocial_api.routing.application"
