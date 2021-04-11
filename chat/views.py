@@ -7,10 +7,10 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from .models import *
 from .serializers import *
-# from notification.services import createNotification
+from notification.services import createNotification
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-# from notification.models import Notification
+from notification.models import Notification
 
 channel_layer = get_channel_layer()
 
@@ -55,6 +55,8 @@ class SetChatRead(APIView):
         chat.isNewMessages = False
         chat.save()
         messages.update(isUnread=False)
+        notify = Notification.objects.filter(user=request.user, chat_id=chat_id)
+        notify.delete()
         return Response(status=200)
 
 def check_translate_key():
@@ -127,6 +129,7 @@ class ChatAdd(APIView):
         for user in chat.users.all():
             if user != request.user:
                 if user.channel:
+                    createNotification('chat', user, 'Новое сообщение в чате', '/lk/chats', chat_id=chat.id)
                     async_to_sync(channel_layer.send)(user.channel,
                                                       {
                                                           "type": "user.notify",
@@ -153,10 +156,10 @@ class ChatNewMessage(APIView):
             chat = chat_qs[0]
 
         # print(request.data)
-        # msg_to = User.objects.get(id=opponent_id)
+
         # print(msg_to)
-        # createNotification('chat', msg_to, 'Новое сообщение в чате', '/lk/chats',chat_id=chat.id)
-        # async_to_sync(channel_layer.send)(msg_to.channel, {"type": "user.notify"})
+        createNotification('chat', chat_opponent, 'Новое сообщение в чате', '/lk/chats',chat_id=chat.id)
+        # async_to_sync(channel_layer.send)(chat_opponent.channel, {"type": "user.notify"})
 
         Message.objects.create(chat=chat,
                                user=request.user,

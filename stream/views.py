@@ -68,3 +68,21 @@ class UpdateStream(APIView):
         return Response(status=200)
 
 
+class AddRemoveLike(APIView):
+    def post(self, request):
+        data = request.data
+        print(data)
+        stream_id = data['stream_id']
+        if data['action'] == 'add':
+            try:
+                stream_likes = StreamLike.objects.get(stream_id=stream_id)
+            except:
+                stream_likes = StreamLike.objects.create(stream_id=stream_id)
+                stream_likes.stream.streamer.streamer_rating+=1
+                stream_likes.stream.streamer.save()
+
+            stream_likes.users.add(request.user)
+        else:
+            stream_likes = StreamLike.objects.get(stream_id=stream_id)
+            stream_likes.users.remove(request.user)
+        return Response(status=200)

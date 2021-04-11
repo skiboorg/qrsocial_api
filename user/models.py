@@ -33,9 +33,29 @@ class UserManager(BaseUserManager):
 class UserTag(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
 
+class BgGroup(models.Model):
+    name = models.CharField('Название группы', max_length=255, blank=False, null=True)
+    is_for_vip = models.BooleanField('Для VIP?', default=False)
+    is_for_vip_level = models.IntegerField('Для ВИП уровня', default=1)
+
+    def __str__(self):
+        return f'Группа бекграундов {self.name} | Для ВИП :{self.is_for_vip} | Для ВИП уровня :{self.is_for_vip_level}'
+
+    class Meta:
+        verbose_name = "Группа бекграундов"
+        verbose_name_plural = "Группы бекграундов"
+
+
 class UserBg(models.Model):
+    group = models.ForeignKey(BgGroup, on_delete=models.CASCADE, null=True, blank=False, related_name='backgrounds')
     image = models.ImageField('Задний фон', upload_to='user/bg', blank=True, null=True)
-    is_for_vip = models.BooleanField('Для ВИП?', default=False)
+
+    def __str__(self):
+        return f'Задний фон'
+
+    class Meta:
+        verbose_name = "Задний фон"
+        verbose_name_plural = "Задние фоны"
 
 class User(AbstractUser):
     username = None
@@ -53,12 +73,17 @@ class User(AbstractUser):
     tags = models.ManyToManyField(UserTag, blank=True)
 
     balance = models.IntegerField('Баланс', default=0)
+
     rating = models.IntegerField('Рейтинг чувака', default=1)
+    vip_rating = models.IntegerField('VIP очки профиля', default=0)
+
     streamer_rating = models.IntegerField('Рейтинг бабы', default=1)
     streams_rating = models.IntegerField('Рейтинг стримов', default=1)
-    level = models.IntegerField('Уровень', default=1)
-    years = models.IntegerField('Лет', default=0)
 
+    level = models.IntegerField('Уровень', default=1)
+    vip_level = models.IntegerField('VIP Уровень', default=0)
+
+    years = models.IntegerField('Лет', default=0)
     about = models.TextField('О себе', blank=True, null=True)
     city = models.CharField('Город', max_length=50, blank=True, null=True)
     education = models.CharField('Образование', max_length=50, blank=True, null=True)

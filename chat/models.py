@@ -11,6 +11,7 @@ class TraslateKey(models.Model):
 class StikerGroup(models.Model):
     name = models.CharField('Название группы', max_length=255, blank=False, null=True)
     is_for_vip = models.BooleanField('Для VIP?', default=False)
+    is_for_vip_level = models.IntegerField('Для ВИП уровня', default=1)
 
     def __str__(self):
         return f'Группа стикеров {self.name} | Для ВИП :{self.is_for_vip}'

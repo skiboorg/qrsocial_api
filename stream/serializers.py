@@ -20,12 +20,18 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             return '/no-avatar.svg'
 
+class StreamLikeSerializer(serializers.ModelSerializer):
+    users = UserSerializer(many=True)
+    class Meta:
+        model = StreamLike
+        fields = ['users']
 
 
 class StreamSerializer(serializers.ModelSerializer):
     streamer = UserSerializer(many=False,required=False,read_only=True)
     url = serializers.CharField(source='get_stream_url',required=False,read_only=True)
     chat_id = serializers.CharField(source='get_stream_chat_id',required=False,read_only=True)
+    likes = StreamLikeSerializer(many=True)
     class Meta:
         model = Stream
         fields = '__all__'

@@ -15,6 +15,7 @@ class Stream(models.Model):
     start = models.DateTimeField(blank=True, null=True)
     stop = models.DateTimeField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    viewers = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
 
@@ -31,3 +32,7 @@ class Stream(models.Model):
             return stream_chat.id
         except:
             return 0
+
+class StreamLike(models.Model):
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE, blank=False, null=True,related_name='likes')
+    users = models.ManyToManyField('user.User', blank=True)

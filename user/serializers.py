@@ -61,7 +61,9 @@ class UserSerializer(serializers.ModelSerializer):
             'birthday',
             'balance',
             'rating',
+            'vip_rating',
             'level',
+            'vip_level',
             'years',
             'vip_update',
             'vip_expire',
@@ -165,4 +167,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserBgSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBg
+        fields = '__all__'
+
+class BgGroupSerializer(serializers.ModelSerializer):
+    backgrounds = UserBgSerializer(many=True)
+    class Meta:
+        model = BgGroup
         fields = '__all__'

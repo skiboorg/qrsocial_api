@@ -72,8 +72,8 @@ class GetUserInfoByNickname(generics.RetrieveAPIView):
 
 
 class GetUserBg(generics.ListAPIView):
-    serializer_class = UserBgSerializer
-    queryset = UserBg.objects.all()
+    serializer_class = BgGroupSerializer
+    queryset = BgGroup.objects.all()
 
 class GetUserTags(generics.ListAPIView):
     serializer_class = UserTagSerializar
