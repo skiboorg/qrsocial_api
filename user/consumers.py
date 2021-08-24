@@ -60,13 +60,15 @@ class UserOnline(AsyncWebsocketConsumer):
 
     async def user_notify(self, event):
         # Handles the "chat.message" event when it's sent to us.
+        print(event)
         message = event['message']
         type = event['event']
+        chat_id = event['chatId']
         # url = event['url']
         await self.send(text_data=json.dumps({
              'event': type,
              'message': message,
-             # 'url': url,
+             'chat_id': chat_id,
 
          }))
     # async def chat_message(self, event):

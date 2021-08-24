@@ -26,7 +26,9 @@ class AddPost(APIView):
     def post(self, request):
         data = request.data
         # print(data)
-        new_post = Post.objects.create(owner=request.user, text=json.loads(request.data['text']))
+        new_post = Post.objects.create(owner=request.user,
+                                       text=json.loads(request.data['text']),
+                                       is_vip=json.loads(request.data['is_vip']))
         for f in request.FILES.getlist('image'):
             # print(f)
             new_post.image = f

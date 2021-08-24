@@ -30,12 +30,16 @@ class UserUpdate(APIView):
 
     def post(self, request):
         user = request.user
-        # print(json.loads(request.data['userData']))
         # print(request.FILES)
         data = json.loads(request.data['userData'])
         serializer = UserSerializer(user, data=data)
         if serializer.is_valid():
             serializer.save()
+            user.tags.through.objects.all().delete()
+            for t in data.get('tags'):
+
+                user.tags.add(t['id'])
+
             for f in request.FILES.getlist('avatar'):
                 # print(f'f=')
                 user.avatar = f

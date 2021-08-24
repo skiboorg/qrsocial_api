@@ -21,8 +21,11 @@ class UserSerializerForGift(serializers.ModelSerializer):
         else:
             return '/no-avatar.svg'
 
+
+
 class GiftSerializer(serializers.ModelSerializer):
     # print('GiftSerializer')
+
     class Meta:
         model = Gift
         fields = '__all__'
@@ -32,9 +35,13 @@ class UserGiftSerializer(serializers.ModelSerializer):
     from_user = UserSerializerForGift(many=False)
     user = UserSerializerForGift(many=False)
     gift = GiftSerializer(many=False)
+    filename = serializers.SerializerMethodField()
     class Meta:
         model = UserGift
         fields = '__all__'
+    def get_filename(self, obj):
+        if obj.answer_file:
+            return obj.answer_file.url.split('/')[::-1][0]
 
 class DonaterSerializer(serializers.ModelSerializer):
     from_user = UserSerializerForGift(many=False)
@@ -56,3 +63,8 @@ class StreamDonaterSerializer(serializers.ModelSerializer):
         ]
 
 
+class GiftCategorySerializer(serializers.ModelSerializer):
+    gifts = GiftSerializer(many=True, required=False, read_only=True)
+    class Meta:
+        model = Category
+        fields = '__all__'

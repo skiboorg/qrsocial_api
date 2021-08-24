@@ -7,9 +7,11 @@ def humanize_time(time):
 
 class Post(models.Model):
     owner = models.ForeignKey('user.User', on_delete=models.CASCADE, blank=False, null=True)
+    title = models.CharField(max_length=100, blank=False, null=True)
     text = models.TextField(blank=False, null=True)
     image = models.ImageField('Фото', upload_to='posts/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_vip = models.BooleanField(default=False)
 
     def get_comments_count(self):
         return self.comments.count()

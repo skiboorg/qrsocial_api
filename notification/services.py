@@ -18,10 +18,11 @@ def createNotification(type,user,text,url,chat_id=0):
         async_to_sync(channel_layer.send)(user.channel, {"type": "user.notify",
                                                          'event':type,
                                                          'message':text,
+                                                         'chatId':chat_id,
                                                          'url':url})
-        msg_html = render_to_string('notification.html', {'message': text,
-                                                          'event': type})
-        send_mail('Новое оповещение Pandiga ', None, 'info@pandiga.ru', [user.email],
-                  fail_silently=False, html_message=msg_html)
+        # msg_html = render_to_string('notification.html', {'message': text,
+        #                                                   'event': type})
+        # send_mail('Новое оповещение Pandiga ', None, 'info@pandiga.ru', [user.email],
+        #           fail_silently=False, html_message=msg_html)
     except:
         print('user offline')

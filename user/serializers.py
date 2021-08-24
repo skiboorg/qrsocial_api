@@ -45,7 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
     own_friend_list = FriendListSerializer(many=True, required=False,read_only=True)
     # apply_list = FriendApplySerializer(many=True)
     gifts = UserGiftSerializer(many=True, required=False,read_only=True)
-    # tags = UserTagSerializar(many=True, required=False,read_only=True)
+    tags = UserTagSerializar(many=True, required=False,read_only=True)
     years = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
@@ -65,12 +65,11 @@ class UserSerializer(serializers.ModelSerializer):
             'level',
             'vip_level',
             'years',
-            'vip_update',
-            'vip_expire',
+            'pay_start',
+            'pay_expire',
             'is_vip',
             'is_streamer',
             'is_verified',
-            'is_email_verified',
             'own_friend_list',
             # 'apply_list',
             'gifts',

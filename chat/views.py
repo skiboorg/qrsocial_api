@@ -14,12 +14,36 @@ from notification.models import Notification
 
 channel_layer = get_channel_layer()
 
+class GetChatByUsers(generics.RetrieveAPIView):
+    serializer_class = ChatSerializer
+    def get_object(self):
+        opponent_nickname = self.request.query_params.get('opponent')
+
+        opponent = User.objects.get(nickname=opponent_nickname)
+        chat,created = Chat.objects.get_or_create(starter=self.request.user,opponent=opponent)
+        if created:
+            chat.users.add(self.request.user)
+            chat.users.add(opponent)
+            print('chat created')
+        return chat
+
+
+class GetChatByUsers4Girl(generics.RetrieveAPIView):
+    serializer_class = ChatSerializer
+
+    def get_object(self):
+        starter_nickname = self.request.query_params.get('starter')
+        starter = User.objects.get(nickname=starter_nickname)
+        chat = Chat.objects.get(opponent=self.request.user,starter=starter)
+        return chat
+
 class GetChat(generics.RetrieveAPIView):
     serializer_class = ChatSerializer
     def get_object(self):
         chat_id = self.request.query_params.get('chat_id')
         chat = Chat.objects.get(id=chat_id)
         return chat
+
 
 
 class MessagesList(generics.ListAPIView):
@@ -89,7 +113,7 @@ class ChatAdd(APIView):
 
     """Добавить сообщение в чат"""
     def post(self,request, chat_id):
-        # print(request.data)
+        print(request.data)
         im_token = check_translate_key()
         message_lang = request.data['message_lang']
         message_text = json.loads(request.data['message'])
@@ -115,7 +139,7 @@ class ChatAdd(APIView):
         chat = Chat.objects.get(id=chat_id)
         new_message = Message.objects.create(chat=chat,
                                              user=request.user,
-                                             stiker_id = stiker,
+                                             stiker_id=stiker,
                                              message=message_text,
                                              message_translate=message_translate)
 
@@ -125,7 +149,7 @@ class ChatAdd(APIView):
 
         message = MessageSerializer(new_message,many=False)
         async_to_sync(channel_layer.group_send)('chat_%s' % chat.id,
-                                                {"type": "chat.message", 'message': message.data})
+                                                {"type": "chat.message", 'message': message.data, 'chatId': chat_id})
         for user in chat.users.all():
             if user != request.user:
                 if user.channel:
@@ -134,7 +158,8 @@ class ChatAdd(APIView):
                                                       {
                                                           "type": "user.notify",
                                                           'message': 'Новое сообщенеи в чатеr',
-                                                          'event' : 'new_chat_mgs'
+                                                          'event' : 'new_chat_mgs',
+                                                          'chatId': chat_id
                                                       })
         return Response(status=201)
 

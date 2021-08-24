@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -44,8 +46,8 @@ class GetUserGifts(generics.ListAPIView):
     serializer_class = UserGiftSerializer
 
     def get_queryset(self):
-        return UserGift.objects.filter(user__nickname=self.request.query_params['nickname'], gift__is_special_gift=False)
-
+        return UserGift.objects.filter(user__nickname=self.request.query_params['nickname'])
+# , gift__is_special_gift=False
 class GetUserGiftsSpecial(generics.ListAPIView):
     serializer_class = UserGiftSerializer
 
@@ -54,10 +56,21 @@ class GetUserGiftsSpecial(generics.ListAPIView):
 
 class GetAllGifts(generics.ListAPIView):
     # print('GetAllGifts')
-    serializer_class = GiftSerializer
-    queryset = Gift.objects.all()
+    serializer_class = GiftCategorySerializer
+    queryset = Category.objects.all()
 
 
+class GiftAnswer(APIView):
+    def post(self, request):
+        print(request.data['text'])
+        print(request.FILES)
+        gift = UserGift.objects.get(id=request.data['id'])
+        gift.answer_text = request.data['text']
+
+        for f in request.FILES.getlist('file'):
+            gift.answer_file = f
+        gift.save()
+        return Response(status=200)
 class SendGiftToUser(APIView):
     def post(self, request):
         # print(request.data)

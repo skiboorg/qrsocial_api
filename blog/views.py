@@ -8,7 +8,7 @@ class GetItems(generics.ListAPIView):
 
     def get_queryset(self):
         if self.request.query_params.get('is_at_index'):
-            blog_items = BlogItem.objects.filter(is_at_home=True)
+            blog_items = BlogItem.objects.filter(is_at_home=True)[:2]
         else:
             blog_items = BlogItem.objects.all()
         return blog_items

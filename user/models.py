@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
 
 
 class UserTag(models.Model):
-    name = models.CharField(max_length=50, blank=True, null=True)
+    label = models.CharField(max_length=50, blank=True, null=True)
 
 class BgGroup(models.Model):
     name = models.CharField('Название группы', max_length=255, blank=False, null=True)
@@ -91,8 +91,10 @@ class User(AbstractUser):
     interests = models.TextField('Интересы', blank=True, null=True)
     interests_additional = models.TextField('Интересы дополнительные', blank=True, null=True)
 
-    vip_update = models.DateField('Дата начала аккаунта', blank=True, null=True)
-    vip_expire = models.DateField('Дата завершения аккаунта', blank=True, null=True)
+
+    pay_start = models.DateField('Дата начала оплаченного аккунта', blank=True, null=True)
+    pay_expire = models.DateField('Дата завершения оплаченного аккунта', blank=True, null=True)
+
     last_online = models.DateTimeField('Последний раз был онлайн', auto_now=True, null=True)
 
     is_vip = models.BooleanField('VIP?', default=False)
