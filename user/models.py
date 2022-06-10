@@ -33,6 +33,8 @@ class UserManager(BaseUserManager):
 class UserTag(models.Model):
     label = models.CharField(max_length=50, blank=True, null=True)
 
+
+
 class BgGroup(models.Model):
     name = models.CharField('Название группы', max_length=255, blank=False, null=True)
     is_for_vip = models.BooleanField('Для VIP?', default=False)
@@ -152,7 +154,10 @@ class User(AbstractUser):
         else:
             return '/media/no-avatar.svg'
 
-
+class UserDonates(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    summ = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 def user_post_save(sender, instance, created, **kwargs):
     """Создание всех значений по-умолчанию для нового пользовыателя"""

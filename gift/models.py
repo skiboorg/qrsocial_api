@@ -1,5 +1,7 @@
 from django.db import models
 
+
+
 class Category(models.Model):
     order_num = models.IntegerField(default=100)
     name = models.CharField('Название', max_length=255, blank=True, null=True)
@@ -47,5 +49,12 @@ class StreamDonater(models.Model):
     from_user = models.ForeignKey('user.User', on_delete=models.CASCADE, null=True, blank=True,
                                   related_name='stream_from_user')
     summ = models.IntegerField(default=0)
+
+
+
+class TotalDonates(models.Model):
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, null=True, blank=True)
+    summ = models.IntegerField(default=0)
+
 
 

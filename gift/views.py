@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
 from .serializers import *
-from user.models import User
+from user.models import User, UserDonates
 from history.services import create_user_history
 from stream.models import Stream
 from chat.models import Chat
@@ -125,6 +125,13 @@ class SendGiftToUser(APIView):
             Donater.objects.create(summ=gift.price,
                                    to_user=gift_to_user,
                                    from_user=gift_from_user)
+
+        totalDonater, created = TotalDonates.objects.get_or_create(user=request.user)
+
+        totalDonater.summ += gift.price
+        totalDonater.save()
+
+        UserDonates.objects.create(user=request.user,summ=gift.price)
 
         create_user_history(gift_to_user, f'Подарок . Пополнен баланс на {gift.price}.')
         create_user_history(gift_from_user, f'Подарок . С баланса спасано {gift.price}.')

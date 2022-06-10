@@ -92,13 +92,13 @@ def check_translate_key():
     try:
         key = TraslateKey.objects.get(id=1)
     except:
-        data = '{"yandexPassportOauthToken":"AgAAAABQDeFrAATuwSGnF2oKw0vmjJeaO4iggoE"}'
+        data = '{"yandexPassportOauthToken":"AQAAAABiFva0AATuwbn0y4WTu0nqsvh3_mRlsrI"}'
         response = requests.post('https://iam.api.cloud.yandex.net/iam/v1/tokens', data=data)
         key = response.json().get('iamToken')
         TraslateKey.objects.create(key=key)
         return (key)
     if timezone.now() - key.updated_at > dt.timedelta(hours=6):
-        data = '{"yandexPassportOauthToken":"AgAAAABQDeFrAATuwSGnF2oKw0vmjJeaO4iggoE"}'
+        data = '{"yandexPassportOauthToken":"AQAAAABiFva0AATuwbn0y4WTu0nqsvh3_mRlsrI"}'
         response = requests.post('https://iam.api.cloud.yandex.net/iam/v1/tokens', data=data)
         key.key = response.json().get('iamToken')
         key.save()
@@ -128,12 +128,13 @@ class ChatAdd(APIView):
         }
 
         data = {
-            "folder_id": "b1grf2b1imq40far6803",
+            "folder_id": "b1gqkktcvs9qvcbem385",
             "texts": [f"{message_text}",],
-            "targetLanguageCode": f"{'ru' if message_lang == 'zh' else 'zh'}"
+            "targetLanguageCode": f"{'ru' if message_lang == 'ko' else 'ko'}"
         }
         response = requests.post('https://translate.api.cloud.yandex.net/translate/v2/translate', headers=headers,
                                  data=json.dumps(data))
+        print(response.json())
         message_translate = response.json().get('translations')[0]['text']
 
         chat = Chat.objects.get(id=chat_id)
