@@ -114,7 +114,7 @@ class ChatAdd(APIView):
     """Добавить сообщение в чат"""
     def post(self,request, chat_id):
         print(request.data)
-        im_token = check_translate_key()
+        #im_token = check_translate_key()
         message_lang = request.data['message_lang']
         message_text = json.loads(request.data['message'])
         stiker= json.loads(request.data['stiker'])
@@ -122,27 +122,27 @@ class ChatAdd(APIView):
 
 
 
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f"Bearer {im_token}",
-        }
-
-        data = {
-            "folder_id": "b1gqkktcvs9qvcbem385",
-            "texts": [f"{message_text}",],
-            "targetLanguageCode": f"{'ru' if message_lang == 'ko' else 'ko'}"
-        }
-        response = requests.post('https://translate.api.cloud.yandex.net/translate/v2/translate', headers=headers,
-                                 data=json.dumps(data))
-        print(response.json())
-        message_translate = response.json().get('translations')[0]['text']
+        # headers = {
+        #     'Content-Type': 'application/json',
+        #     'Authorization': f"Bearer {im_token}",
+        # }
+        #
+        # data = {
+        #     "folder_id": "b1gqkktcvs9qvcbem385",
+        #     "texts": [f"{message_text}",],
+        #     "targetLanguageCode": f"{'ru' if message_lang == 'ko' else 'ko'}"
+        # }
+        # response = requests.post('https://translate.api.cloud.yandex.net/translate/v2/translate', headers=headers,
+        #                          data=json.dumps(data))
+        # print(response.json())
+        # message_translate = response.json().get('translations')[0]['text']
 
         chat = Chat.objects.get(id=chat_id)
         new_message = Message.objects.create(chat=chat,
                                              user=request.user,
                                              stiker_id=stiker,
                                              message=message_text,
-                                             message_translate=message_translate)
+                                             message_translate=message_text)
 
         for f in request.FILES.getlist('image'):
             new_message.image = f
